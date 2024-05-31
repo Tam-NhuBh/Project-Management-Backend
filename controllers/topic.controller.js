@@ -1,10 +1,12 @@
 const topicModel = require("../models/topic.model");
 const ErrorResponse = require("../helpers/ErrorResponse");
+const {registrationSystem} = require("../service/pattern/subject/monitorChange");
+const NotificationModel = require("../models/notification.model");
 
 module.exports = {
   create: async (req, res) => {
     try {
-      console.log("TEst",req.body)
+      console.log("Test",req.body)
       const data = await topicModel.create(req.body);
       res.status(201).json(data);
     } catch (error) {
@@ -82,8 +84,7 @@ module.exports = {
       await topicModel.findOneAndDelete({ _id: req.params.id });
       res.status(201).json("Delete topic successful");
     } catch (error) {
-      throw error;
-    }
+      next(error);    }
   },
 
   findTopicOfStudent: async (req, res) => {
@@ -116,20 +117,18 @@ module.exports = {
       throw error;
     }
   },
-
+  
   update: async (req, res) => {
     try {
-      const data = await topicModel.findByIdAndUpdate(
+      // console.log(typeof(registrationSystem))
+      const data = await registrationSystem.updateTopic(
         req.params.id,
-        {
-          ...req.body,
-        },
-        { new: true }
+        req.body
       );
-
       res.status(201).json(data);
     } catch (error) {
-      throw error;
+      console.log("E:",error)
     }
   },
+
 };
